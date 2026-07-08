@@ -1,0 +1,8 @@
+*.MOV
+!public/thoughts-videos/*.mov
+!public/thoughts-videos/*.MOV
+node_modules
+node_modules/
+.next
+.env
+.env.local
