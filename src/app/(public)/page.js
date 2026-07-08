@@ -12,7 +12,7 @@ export default function HomePage() {
       <HomeHero />
       <EMDRSection />
       <WhoIsItFor />
-      <TestimonialsSection />
+      {/* <TestimonialsSection /> */}
       <PathToHealing />
       <ProvenResults />
       <FAQSection />
