@@ -17,7 +17,7 @@ const HowThisActually = ({ desktopImage = "/homeImage/image1.png" }) => {
     {
       img: "/homeImage/Frame (2).svg",
       title: "Ongoing: Integration & Growth",
-      desc: "Use homework exercises daily. Track your progress. Celebrate small wins. Know that your subscription is literally funding someone else's healing.",
+      desc: "Use After Hours exercises daily. Track your progress. Celebrate small wins. Know that your subscription is literally funding someone else's healing.",
     },
   ];
 

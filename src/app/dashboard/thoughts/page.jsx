@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react/no-unescaped-entities */
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -128,6 +129,8 @@ const mindfulnessVideos = [
   },
 ];
 
+const SHOULD_AUTO_PLAY_MINDFULNESS_AUDIO = false;
+
 const thoughtsData = [
   {
     id: 1,
@@ -151,7 +154,7 @@ const thoughtsData = [
     id: 3,
     type: "coming-soon",
     tag: "Coming Soon",
-    title: "Thanking the Mind",
+    title: "Your Thought Video Library",
     description:
       "Practice acknowledging thoughts without getting caught up in them.",
     status: "locked",
@@ -170,6 +173,39 @@ const thoughtsData = [
 ];
 
 const MindfulnessArticle = ({ onClose }) => {
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
+  const handleMindfulnessAudioToggle = async () => {
+    if (audioRef.current && isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio("/voice/Jörgen Mindfulness.m4a");
+      audioRef.current.preload = "auto";
+      audioRef.current.onended = () => setIsPlaying(false);
+    }
+
+    try {
+      await audioRef.current.play();
+      setIsPlaying(true);
+    } catch (error) {
+      console.error("Unable to play mindfulness audio:", error);
+      setIsPlaying(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -201,7 +237,7 @@ const MindfulnessArticle = ({ onClose }) => {
         </div>
 
         <p className="text-xl md:text-2xl text-[#4B5563] mb-12 text-center italic leading-relaxed font-serif max-w-[800px] mx-auto">
-          "Mindfulness is a straightforward mental training practice backed by neuroscience research.
+          &quot;Mindfulness is a straightforward mental training practice backed by neuroscience research.
           There's nothing mystical about it—it's simply about learning to pay attention in a specific way."
         </p>
 
@@ -274,10 +310,18 @@ const MindfulnessArticle = ({ onClose }) => {
           foundational capacity.
         </p>
 
-        <div className="mt-20 flex justify-center pb-8">
+        <div className="mt-20 flex flex-col items-center gap-4 pb-8">
+          <button
+            type="button"
+            onClick={handleMindfulnessAudioToggle}
+            className="inline-flex items-center gap-3 rounded-full bg-[#4A7C59] px-12 py-5 text-lg font-semibold text-white shadow-2xl transition-all hover:scale-105 hover:bg-[#3d6649] hover:shadow-[#4A7C59]/30"
+          >
+            {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+            {isPlaying ? "Pause Mindfulness Audio" : "Play Mindfulness Audio"}
+          </button>
           <button
             onClick={onClose}
-            className="px-16 py-5 bg-[#4A7C59] text-white rounded-full font-semibold text-lg hover:bg-[#3d6649] transition-all transform hover:scale-105 shadow-2xl hover:shadow-[#4A7C59]/30"
+            className="px-10 py-3 text-[#4A7C59] rounded-full font-semibold text-base hover:bg-white/70 transition-all"
           >
             Complete Reading & Continue
           </button>
@@ -351,16 +395,11 @@ export default function ThoughtsPage() {
 
   useEffect(() => {
     const currentAudio = audioRef.current;
-    const currentMindfulnessAudio = mindfulnessAudioRef.current;
     const currentModalVideo = modalVideoRef.current;
 
     return () => {
       if (currentAudio) {
         currentAudio.pause();
-      }
-
-      if (currentMindfulnessAudio) {
-        currentMindfulnessAudio.pause();
       }
 
       if (currentModalVideo) {
@@ -370,7 +409,7 @@ export default function ThoughtsPage() {
   }, []);
 
   useEffect(() => {
-    if (!showMindfulnessArticle) {
+    if (!showMindfulnessArticle || !SHOULD_AUTO_PLAY_MINDFULNESS_AUDIO) {
       if (mindfulnessAudioRef.current) {
         mindfulnessAudioRef.current.pause();
         mindfulnessAudioRef.current = null;
@@ -381,7 +420,7 @@ export default function ThoughtsPage() {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
-      setActiveAudioId(null);
+      queueMicrotask(() => setActiveAudioId(null));
     }
 
     const audio = new Audio("/voice/Jörgen Mindfulness.m4a");
@@ -802,7 +841,7 @@ export default function ThoughtsPage() {
             <div className="mb-6 flex items-start justify-between gap-4 pr-14">
               <div>
                 <p className="mb-2 text-sm font-semibold uppercase tracking-[0.24em] text-[#4A7C59]">
-                  {activeVideoModal === "mindfulness" ? "Mindfulness" : "Thanking the Mind"}
+                  {activeVideoModal === "mindfulness" ? "Mindfulness" : "Your Thought Video Library"}
                 </p>
                 <h2 className="text-3xl font-serif text-[#1F2937]">
                   Video Practice Library

@@ -95,32 +95,25 @@ export default function SubscriptionAssessmentHistoryChart() {
         const entries = Array.isArray(historyByType[assessment.endpointType])
           ? historyByType[assessment.endpointType]
           : [];
-        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        const data = days.map((day) => ({
-          label: day,
-          value: 0,
-          band: "Score",
-          submittedAt: null,
-        }));
+        const data = entries
+          .map((entry, index) => {
+            const date = new Date(entry.submittedAt);
+            if (Number.isNaN(date.getTime())) return null;
 
-        entries.forEach((entry) => {
-          const date = new Date(entry.submittedAt);
-          if (Number.isNaN(date.getTime())) return;
-
-          const dayIndex = date.getDay();
-          const existingDate = data[dayIndex].submittedAt
-            ? new Date(data[dayIndex].submittedAt)
-            : null;
-
-          if (!existingDate || date > existingDate) {
-            data[dayIndex] = {
-              label: days[dayIndex],
+            return {
+              label: new Intl.DateTimeFormat("en-US", {
+                weekday: "short",
+                day: "numeric",
+              }).format(date),
               value: Number(entry.score ?? 0),
               band: entry.severity || "Score",
               submittedAt: entry.submittedAt,
+              fallbackLabel: `Entry ${index + 1}`,
             };
-          }
-        });
+          })
+          .filter(Boolean)
+          .sort((first, second) => new Date(first.submittedAt) - new Date(second.submittedAt))
+          .slice(-7);
 
         return { ...assessment, data };
       }),

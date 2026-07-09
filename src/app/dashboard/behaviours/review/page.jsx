@@ -601,7 +601,7 @@ function MessageCard({ message, hierarchy, week, onReviewStep }) {
     return (
       <div className="recommendations-box">
         <div className="summary-header">
-          Your Homework Plan For Week {week + 1}
+          Your Practice Plan For Week {week + 1}
         </div>
         {items.map((item, index) => (
           <div key={item} className="recommendation-item">
@@ -728,7 +728,7 @@ export default function WeeklyReviewPage() {
 
       await addBotMessage(
         "text",
-        { content: "How have you been finding the homework this week?" },
+        { content: "How have you been finding the practice this week?" },
         1000,
       );
 
@@ -1313,7 +1313,7 @@ export default function WeeklyReviewPage() {
         "text",
         {
           content:
-            "Would you like me to finish with a clear homework plan for next week?",
+            "Would you like me to finish with a clear practice plan for next week?",
         },
         900,
       );

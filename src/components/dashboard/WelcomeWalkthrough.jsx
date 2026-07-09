@@ -13,7 +13,8 @@ export default function WelcomeWalkthrough() {
   useEffect(() => {
     // Show the popup every time they log in / land on the dashboard
     if (hasHydrated && isAuthenticated) {
-      setIsOpen(true);
+      const timer = window.setTimeout(() => setIsOpen(true), 0);
+      return () => window.clearTimeout(timer);
     }
   }, [hasHydrated, isAuthenticated]);
 
@@ -85,8 +86,8 @@ export default function WelcomeWalkthrough() {
                   <BookOpen className="w-6 h-6 text-[#4A7C59]" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Homework</h3>
-                  <p className="text-sm text-gray-500 mt-1">Exercises and tasks assigned to reinforce your therapy sessions.</p>
+                  <h3 className="font-semibold text-gray-900">After Hours</h3>
+                  <p className="text-sm text-gray-500 mt-1">Your personal practice and reflection space between sessions.</p>
                 </div>
               </div>
 

@@ -44,8 +44,8 @@ export default function HomeworkPage() {
 
       {/* Page Header */}
       <div className="homework-header">
-        <h1>EMDR Homework Portal</h1>
-        <p>Your personal space for growth and healing</p>
+        <h1>After Hours</h1>
+        <p>Your Personal Practice and Reflection Space</p>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

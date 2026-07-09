@@ -32,8 +32,16 @@ export default function WelcomeSection() {
       `}</style>
 
       <div className="welcome-text">
-        <h2>Welcome to Your Journey</h2>
-        <p>Choose an area below to access your personalized EMDR homework exercises. Each section contains carefully crafted activities to support your healing process.</p>
+        <h2>After Hours</h2>
+        <p>
+          Your Personal Practice and Reflection Space
+        </p>
+        <p>
+          The work doesn&apos;t stop when the session ends. Choose an area
+          below to continue - at your own pace, in your own time. Each space
+          holds exercises designed to support what&apos;s unfolding between
+          sessions.
+        </p>
       </div>
     </div>
   );

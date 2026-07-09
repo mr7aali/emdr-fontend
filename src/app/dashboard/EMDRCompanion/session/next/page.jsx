@@ -448,7 +448,7 @@ export default function CBTFormulation() {
       <div className="relative z-10 min-h-screen overflow-y-auto rounded-2xl ">
         <div className="sticky top-0 z-20 px-8 pb-4 pt-8 backdrop-blur-sm">
           <h1 className="text-2xl font-serif text-stone-900">
-            My CBT Formulation
+            My Story
           </h1>
         </div>
 

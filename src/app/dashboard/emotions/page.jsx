@@ -15,7 +15,7 @@ export default function EmotionsLanding() {
       type: "Audio",
       title: "Spiral Technique",
       description:
-        "A grounding technique to help when emotions feel overwhelming.",
+        "A calming technique to help ease emotions that feel too big to sit with.",
       icon: <Music className="w-3.5 h-3.5" />,
       audioSrc: "/voice/Spiral Technique.mp4",
     },
@@ -24,7 +24,7 @@ export default function EmotionsLanding() {
       type: "Video",
       title: "Thunder and Lightning",
       description:
-        "A grounding technique to help when emotions feel overwhelming.",
+        "A steadying technique for moments when feelings arrive fast and hit hard.",
       icon: <Video className="w-3.5 h-3.5" />,
       link: "/dashboard/emotions/thunder-lightning",
     },
@@ -33,25 +33,25 @@ export default function EmotionsLanding() {
       type: "Video",
       title: "Mountain",
       description:
-        "A visual grounding exercise to help when emotions feel overwhelming.",
+        "A visual exercise to help you feel more anchored when emotions start to overwhelm.",
       icon: <Video className="w-3.5 h-3.5" />,
       link: "/dashboard/emotions/mountain",
     },
     {
       id: "emdr",
-      type: "EMDER",
+      type: "EMDR 2.0",
       title: "EMDR 2.0",
       description:
-        "A grounding technique to help when emotions feel overwhelming.",
+        "A guided technique to support you when emotions feel too big to hold alone. This is a short version of EMDR that you can practice to process big emotions.",
       icon: <Layers className="w-3.5 h-3.5" />,
       link: "/dashboard/emotions/emdr",
     },
     {
       id: "drawing",
       type: "Drawing",
-      title: "Emotion Drawing exercise",
+      title: "Emotion Drawing",
       description:
-        "A grounding technique to help when emotions feel overwhelming.",
+        "A creative exercise to help externalise feelings that are hard to put into words.",
       icon: <Pencil className="w-3.5 h-3.5" />,
       link: "/dashboard/emotions/body-map",
     },
@@ -106,7 +106,11 @@ export default function EmotionsLanding() {
       <div className=" bg-white/30 rounded-[40px] border border-white/50  p-2">
         {/* Centered Title */}
         <div className="py-10 text-center">
-          <h1 className="text-[28px] text-[#000000]">Emotions</h1>
+          <h1 className="text-[28px] text-[#000000]">Your Emotions</h1>
+          <p className="mx-auto mt-4 max-w-3xl text-base leading-7 text-[#4A5A4E]">
+            It&apos;s normal for feelings to feel bigger right now. These
+            exercises are here to help you ride the wave, not fight it.
+          </p>
         </div>
 
         {/* Inner Content Section */}

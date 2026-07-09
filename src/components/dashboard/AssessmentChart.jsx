@@ -189,34 +189,24 @@ export default function AssessmentChart() {
           historyResults.forEach(({ trackerType, submissions }) => {
             if (!nextCharts[trackerType]) return;
 
-            const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            const dayData = days.map(day => ({
-              label: day,
-              value: 0,
-              submittedAt: null,
-            }));
+            nextCharts[trackerType].data = submissions
+              .map((submission, index) => {
+                const dateValue = submission?.submittedAt || submission?.createdAt;
+                const date = new Date(dateValue);
 
-            // Map submissions to the correct weekday slot
-            // We'll take the most recent submission for each day of the current week (or last 7 days)
-            submissions.forEach(submission => {
-              const date = new Date(submission?.submittedAt || submission?.createdAt);
-              if (Number.isNaN(date.getTime())) return;
+                if (Number.isNaN(date.getTime())) {
+                  return null;
+                }
 
-              const dayIndex = date.getDay();
-              const existingDate = dayData[dayIndex].submittedAt
-                ? new Date(dayData[dayIndex].submittedAt)
-                : null;
-
-              if (!existingDate || date > existingDate) {
-                dayData[dayIndex] = {
-                  label: days[dayIndex],
+                return {
+                  label: formatDateLabel(dateValue, index),
                   value: submission?.totalScore ?? 0,
-                  submittedAt: submission?.submittedAt || submission?.createdAt,
+                  submittedAt: dateValue,
                 };
-              }
-            });
-
-            nextCharts[trackerType].data = dayData;
+              })
+              .filter(Boolean)
+              .sort((first, second) => new Date(first.submittedAt) - new Date(second.submittedAt))
+              .slice(-7);
           });
         }
 

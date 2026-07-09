@@ -3,7 +3,7 @@ import React from 'react';
 const EMDRComparison = () => {
   const comparisonData = [
     { label: 'Treatment Duration', emdr: 'Faster', traditional: 'Extended' },
-    { label: 'Between Sessions', emdr: 'Natural processing', traditional: 'Daily homework' },
+    { label: 'Between Sessions', emdr: 'Natural processing', traditional: 'Daily practice' },
     { label: 'Dropout Rate', emdr: '0-20%', traditional: '30-40%' },
     { label: 'Verbal Processing', emdr: 'Minimal', traditional: 'Extensive' },
     { label: 'Long-term Effect', emdr: 'Sustained', traditional: 'Variable' },

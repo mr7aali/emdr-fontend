@@ -7,14 +7,14 @@ export default function TestsSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
         {/* My Tests Card */}
         <div className="bg-white/30 rounded-3xl shadow-lg overflow-hidden">
-          {/* Header Image with Clock */}
+          {/* Header Image */}
           <div className="h-48 relative overflow-hidden">
             <img
-              src="/homeImage/watch.jpg"
-              alt="Vintage clock"
-              className="w-full h-full object-cover opacity-60"
+              src="/images/Image 1 for questionnaies.jpg"
+              alt="People gathered in a supportive practice space"
+              className="w-full h-full object-cover opacity-80"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-100/60 to-pink-100/60"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/70 to-white/40"></div>
 
             {/* Checklist Icon in Circle */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center z-10">
@@ -52,14 +52,15 @@ export default function TestsSection() {
 
         {/* My Results Card */}
         <div className="bg-white/30 rounded-3xl shadow-lg overflow-hidden">
-          {/* Header Image with Ocean/Sky */}
+          {/* Header Image */}
           <div className="h-48 relative overflow-hidden">
             <img
-              src="/homeImage/image2.png"
-              alt="Ocean sunset"
+              // src="/images/Untitled design (8).png"
+              src="/images/Image 2 for questionnaies.jpg"
+              alt="Person reflecting with a visual mind map"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-amber-100/30 to-blue-100/30"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-white/35 to-emerald-50/50"></div>
 
             {/* Chart Icon in Circle */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center z-10">

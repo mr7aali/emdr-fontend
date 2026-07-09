@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import { motion } from "framer-motion";
 const Therapyshouldn = () => {
@@ -30,7 +31,7 @@ const Therapyshouldn = () => {
               <p>
                 This is trauma therapy that doesn't traumatise your bank account
                 or your dignity. It's CBT exercises that don't feel like
-                homework. It's EMDR without the eye-watering session fees.
+                between-session practice. It&apos;s EMDR without the eye-watering session fees.
               </p>
             </div>
             <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-stone-200">

@@ -23,7 +23,7 @@ const WorkProcess = () => {
       id: 3,
       imageSrc: "/homeImage/Container (9).svg",
       title: "Ongoing: Integration & Growth",
-      desc: "Use homework exercises daily. Track your progress. Celebrate small wins. Know that your subscription is literally funding someone else's healing.",
+      desc: "Use After Hours exercises daily. Track your progress. Celebrate small wins. Know that your subscription is literally funding someone else's healing.",
     },
   ];
 

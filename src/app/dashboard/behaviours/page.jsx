@@ -58,7 +58,7 @@ const resolveLatestPlanId = async ({ baseUrl, token }) => {
     baseUrl,
     token,
     path: "/api/exposure/plans",
-    errorMessage: "Unable to load your latest behaviour homework.",
+    errorMessage: "Unable to load your latest behaviour practice.",
   });
 
   const plans = Array.isArray(plansData)
@@ -216,14 +216,14 @@ export default function BehavioursLandingPage() {
         }).catch(() => "");
 
         if (!fallbackPlanId) {
-          throw new Error("Unable to load your latest behaviour homework.");
+          throw new Error("Unable to load your latest behaviour practice.");
         }
 
         const data = await exposureRequest({
           baseUrl,
           token,
           path: `/api/exposure/plan/${fallbackPlanId}/weekly-review`,
-          errorMessage: "Unable to load your latest behaviour homework.",
+          errorMessage: "Unable to load your latest behaviour practice.",
         });
 
         if (cancelled) {
@@ -251,7 +251,7 @@ export default function BehavioursLandingPage() {
       } catch (error) {
         if (!cancelled) {
           setLoadError(
-            error?.message || "Unable to load your latest behaviour homework.",
+            error?.message || "Unable to load your latest behaviour practice.",
           );
         }
       } finally {
@@ -300,7 +300,7 @@ export default function BehavioursLandingPage() {
             <Link href="/dashboard/behaviours/review" className="block w-full">
               <button className="flex w-full items-center justify-center gap-3 rounded-[20px] bg-[#4a7b59] py-5 font-medium text-white shadow-lg shadow-[#4a7b59]/25 transition-all hover:-translate-y-0.5 hover:bg-[#3b6648] hover:shadow-[#4a7b59]/35 active:translate-y-0">
                 <Plus className="h-6 w-6" />
-                Make A New Homework
+                Make A New Practice Plan
               </button>
             </Link>
           </div>

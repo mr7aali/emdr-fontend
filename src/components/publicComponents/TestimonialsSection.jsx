@@ -1,126 +1,133 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Star } from "lucide-react"; 
+import React, { useMemo, useState } from "react";
+import { MessageCircle, Send, Star } from "lucide-react";
 
-const testimonials = [
-  {
-    name: "John Walker",
-    role: "CEO, company",
-    image: "https://i.pravatar.cc/150?u=1",
-    stars: 4,
-    quote: "I've tried many platforms, but UI Wiki stands out for its attention to detail and clean aesthetics. Highly recommend!",
-  },
-  {
-    name: "Harry Maguire",
-    role: "CFO, company",
-    image: "https://i.pravatar.cc/150?u=2",
-    stars: 5,
-    quote: "UI Wiki transformed our design process! The templates are modern, user-friendly, and saved us countless hours.",
-  },
-  {
-    name: "Edgar Davids",
-    role: "UI Designer, company",
-    image: "https://i.pravatar.cc/150?u=3",
-    stars: 4,
-    quote: "UI Wiki's grid section templates are visually impressive and easy to customize. They've elevated my project presentations.",
-  },
-  {
-    name: "Ashley Cook",
-    role: "UX Designer, company",
-    image: "https://i.pravatar.cc/150?u=4",
-    stars: 5,
-    quote: "We revamped our company website using these templates and the feedback has been overwhelming!",
-  },
-];
-
-const TestimonialCard = ({ item }) => (
-  <div className="min-w-[350px] md:min-w-[450px] bg-white p-8 rounded-[20px] border-2 border-[#92B09B] mx-4">
-    <div className="flex justify-between items-start mb-4">
-      <div className="flex items-center gap-4">
-        <img
-          src={item.image}
-          alt={item.name}
-          className="w-12 h-12 rounded-full object-cover"
-        />
-        <div>
-          <h4 className="font-bold text-[#2D312D]">{item.name}</h4>
-          <p className="text-sm text-gray-500">{item.role}</p>
-        </div>
-      </div>
-      <div className="flex gap-0.5">
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            size={16}
-            fill={i < item.stars ? "#568261" : "none"}
-            className={i < item.stars ? "text-[#568261]" : "text-gray-300"}
-          />
-        ))}
-      </div>
-    </div>
-    
-    <div className="text-[#568261] mb-2">
-      <svg width="30" height="24" viewBox="0 0 30 24" fill="currentColor">
-        <path d="M0 24V11.1341C0 7.51421 0.824961 4.78907 2.47488 2.95868C4.1248 1.12829 6.6338 0.139648 10 0V4.54224C8.42857 4.54224 7.23077 4.96541 6.40659 5.81176C5.58242 6.65811 5.17033 7.91501 5.17033 9.58245V11.1341H10V24H0ZM20 24V11.1341C20 7.51421 20.825 4.78907 22.4749 2.95868C24.1248 1.12829 26.6338 0.139648 30 0V4.54224C28.4286 4.54224 27.2308 4.96541 26.4066 5.81176C25.5824 6.65811 25.1703 7.91501 25.1703 9.58245V11.1341H30V24H20Z" />
-      </svg>
-    </div>
-
-    <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-      {item.quote}
-    </p>
-  </div>
-);
+const REVIEW_EMAIL =
+  process.env.NEXT_PUBLIC_REVIEW_EMAIL || "clinical@inkind.uk";
 
 const TestimonialsSection = () => {
+  const [rating, setRating] = useState(0);
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState("");
+
+  const canSubmit = message.trim().length > 0 && rating > 0;
+
+  const emailBody = useMemo(
+    () =>
+      [
+        `Rating: ${rating || "Not selected"} / 5`,
+        name.trim() ? `Name: ${name.trim()}` : "Name: Anonymous",
+        "",
+        "Review:",
+        message.trim(),
+      ].join("\n"),
+    [message, name, rating],
+  );
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!canSubmit) {
+      setStatus("Please choose a rating and write a short review first.");
+      return;
+    }
+
+    const mailto = new URL(`mailto:${REVIEW_EMAIL}`);
+    mailto.searchParams.set("subject", "InKind EMDR review");
+    mailto.searchParams.set("body", emailBody);
+
+    window.location.href = mailto.toString();
+    setStatus("Your email app should open with your review ready to send.");
+  };
+
   return (
-    <section className="bg-[#FCF9F4] py-10 overflow-hidden">
-      <div className="container mx-auto px-6 mb-16 text-center">
-        <h2 className="text-4xl md:text-5xl font-serif text-[#2D312D] mb-4">
-          What People Are Saying
-        </h2>
-        <p className="text-[#568261] font-medium uppercase tracking-widest text-xs md:text-sm opacity-80">
-          Hear the trusted feedback from customers who have put their faith in us
-        </p>
-      </div>
-
-
-      <div className="relative flex flex-col gap-8">
-
-        <div className="flex">
-          <motion.div
-            initial={{ x: 0 }}
-            animate={{ x: "-50%" }}
-            transition={{
-              duration: 30,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            className="flex"
-          >
-            {[...testimonials, ...testimonials].map((item, index) => (
-              <TestimonialCard key={index} item={item} />
-            ))}
-          </motion.div>
+    <section className="bg-[#FCF9F4] px-6 py-16">
+      <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+        <div>
+          <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#DBE5DE] text-[#4A7C59]">
+            <MessageCircle size={24} />
+          </div>
+          <h2 className="mb-4 font-serif text-4xl text-[#2D312D] md:text-5xl">
+            Share Your Experience
+          </h2>
+          <p className="max-w-xl text-base leading-7 text-[#4A5A4E]">
+            We have hidden the placeholder reviews while we collect real
+            feedback. If InKind EMDR has helped you, you can leave a short note
+            for the team here.
+          </p>
         </div>
 
-        <div className="flex">
-          <motion.div
-            initial={{ x: "-50%" }}
-            animate={{ x: 0 }}
-            transition={{
-              duration: 35,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            className="flex"
-          >
-            {[...testimonials, ...testimonials].map((item, index) => (
-              <TestimonialCard key={index} item={item} />
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-[20px] border border-[#DBE5DE] bg-white p-6 shadow-sm md:p-8"
+        >
+          <label className="mb-3 block text-sm font-semibold uppercase tracking-[0.16em] text-[#568261]">
+            Your rating
+          </label>
+          <div className="mb-6 flex gap-2">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setRating(value)}
+                aria-label={`${value} star${value > 1 ? "s" : ""}`}
+                className="rounded-full p-1 text-[#568261] transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#568261]/30"
+              >
+                <Star
+                  size={28}
+                  fill={value <= rating ? "#568261" : "none"}
+                  className={
+                    value <= rating ? "text-[#568261]" : "text-[#C9D7CE]"
+                  }
+                />
+              </button>
             ))}
-          </motion.div>
-        </div>
+          </div>
+
+          <label
+            htmlFor="review-name"
+            className="mb-2 block text-sm font-medium text-[#2D312D]"
+          >
+            Name optional
+          </label>
+          <input
+            id="review-name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            className="mb-5 w-full rounded-xl border border-[#DBE5DE] px-4 py-3 text-[#2D312D] outline-none transition focus:border-[#568261] focus:ring-2 focus:ring-[#568261]/10"
+            placeholder="Your name"
+          />
+
+          <label
+            htmlFor="review-message"
+            className="mb-2 block text-sm font-medium text-[#2D312D]"
+          >
+            Review
+          </label>
+          <textarea
+            id="review-message"
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            rows={5}
+            className="mb-5 w-full resize-none rounded-xl border border-[#DBE5DE] px-4 py-3 text-[#2D312D] outline-none transition placeholder:text-stone-400 focus:border-[#568261] focus:ring-2 focus:ring-[#568261]/10"
+            placeholder="Write a few words about your experience..."
+          />
+
+          <button
+            type="submit"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#4A7C59] px-5 py-3 font-semibold text-white transition hover:bg-[#3d6649] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={!canSubmit}
+          >
+            <Send size={18} />
+            Send Review
+          </button>
+
+          {status && (
+            <p className="mt-4 text-center text-sm text-[#568261]">{status}</p>
+          )}
+        </form>
       </div>
     </section>
   );

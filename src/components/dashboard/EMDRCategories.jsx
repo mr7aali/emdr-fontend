@@ -5,22 +5,22 @@ export default function EMDRCategories() {
   const categories = [
     {
       title: "Behaviours",
-      description: "Transform what you're doing or not doing",
+      description: "Manage what you do, avoid, or repeat.",
       image: "/homeImage/gril.jpg",
       link: "/dashboard/behaviours",
-      locked: true,
+      locked: false,
     },
     {
       title: "Thoughts",
-      description: "Understanding and reshaping your thinking",
-      image: "/homeImage/thu.jpg",
+      description: "Understand thoughts without being pulled in.",
+      image: "/homeImage/thought_exercise.png",
       link: "/dashboard/thoughts",
       locked: false,
     },
     {
       title: "Emotions",
-      description: "Tools to manage bigger emotions",
-      image: "/homeImage/gril.jpg",
+      description: "Ride the wave when feelings feel bigger.",
+      image: "/images/emotions homework.jpeg",
       link: "/dashboard/emotions",
       locked: false,
     },

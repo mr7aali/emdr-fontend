@@ -165,20 +165,31 @@ export default function MyStoryPage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h1 className="text-2xl font-serif text-stone-900">
-                My CBT Formulation
+                My Story
               </h1>
+              <p className="mt-1 text-sm text-stone-600">
+                Review or edit your story.
+              </p>
               {entry ? (
                 <p className="mt-1 text-sm text-stone-600">
                   Saved on {formatDate(entry?.createdAt)}
                 </p>
               ) : null}
             </div>
-            <Link
-              href="/dashboard/resources"
-              className="rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-[#355A43] transition-colors hover:bg-stone-50"
-            >
-              Back to resources
-            </Link>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/dashboard/EMDRCompanion/session/next"
+                className="rounded-full bg-[#4A7C59] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#3d6649]"
+              >
+                Edit Story
+              </Link>
+              <Link
+                href="/dashboard/resources"
+                className="rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-[#355A43] transition-colors hover:bg-stone-50"
+              >
+                Back to resources
+              </Link>
+            </div>
           </div>
         </div>
 

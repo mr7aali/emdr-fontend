@@ -38,7 +38,7 @@ export default function Sidebar() {
   const navItems = [
     { name: "My EMDR", href: "/dashboard" },
     { name: "My Progress", href: "/dashboard/progress" },
-    { name: "My Homework ", href: "/dashboard/homework" },
+    { name: "After Hours", href: "/dashboard/homework" },
     { name: "My Resources", href: "/dashboard/resources" },
   ];
 
@@ -59,7 +59,7 @@ export default function Sidebar() {
       return;
     }
 
-    toast.error("Please buy a premium plan first to activate My Homework.");
+    toast.error("Please buy a premium plan first to activate After Hours.");
   };
 
   return (
@@ -77,7 +77,7 @@ export default function Sidebar() {
         </div>
         <nav className="space-y-2 flex-1">
           {navItems.map((item) => {
-            const isHomeworkItem = item.name.trim() === "My Homework";
+            const isHomeworkItem = item.name.trim() === "After Hours";
             const isHomeworkLocked = isHomeworkItem && !canUseHomework;
             const isActive =
               item.href === "/dashboard"
