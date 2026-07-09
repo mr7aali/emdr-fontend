@@ -123,17 +123,21 @@ export default function CalmPlaceDetailPage() {
           </div>
         ) : calmPlace ? (
           <>
-            <div className="absolute inset-0">
-              <Image
-                src={calmPlace.image}
-                alt={calmPlace.describe || "Calm place image"}
-                fill
-                unoptimized
-                sizes="100vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(240,236,227,0.56),rgba(240,236,227,0.28),rgba(240,236,227,0.18))]" />
-            </div>
+            {calmPlace.image ? (
+              <div className="absolute inset-0">
+                <Image
+                  src={calmPlace.image}
+                  alt={calmPlace.describe || "Calm place image"}
+                  fill
+                  unoptimized
+                  sizes="100vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(240,236,227,0.56),rgba(240,236,227,0.28),rgba(240,236,227,0.18))]" />
+              </div>
+            ) : (
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,#f6f1e8,#dbe6dc)]" />
+            )}
 
             <div className="relative z-10 p-4 md:p-6">
               <div className="mb-4 flex items-center justify-between gap-4">
@@ -154,8 +158,9 @@ export default function CalmPlaceDetailPage() {
               </div>
 
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.9fr)]">
-                <div className="overflow-hidden rounded-3xl border border-white/50 bg-white/35 shadow-[0_18px_38px_rgba(31,41,55,0.18)] backdrop-blur-[2px]">
-                  <div className="relative h-[500px] w-full">
+                {calmPlace.image ? (
+                  <div className="overflow-hidden rounded-3xl border border-white/50 bg-white/35 shadow-[0_18px_38px_rgba(31,41,55,0.18)] backdrop-blur-[2px]">
+                    <div className="relative h-[500px] w-full">
                     <Image
                       src={calmPlace.image}
                       alt={calmPlace.describe || "Calm place image"}
@@ -164,10 +169,21 @@ export default function CalmPlaceDetailPage() {
                       sizes="(min-width: 1024px) 55vw, 100vw"
                       className="object-cover"
                     />
+                    </div>
                   </div>
-                </div>
+                ) : null}
 
                 <div className="space-y-4">
+                  {(calmPlace.pincode || calmPlace.pinCode) && (
+                    <div className="rounded-2xl border border-[#bfc8bb] bg-white/90 p-5 shadow-[0_8px_18px_rgba(53,90,67,0.12)]">
+                      <h2 className="font-serif text-xl text-[#2d2a26]">
+                        Pincode
+                      </h2>
+                      <p className="mt-2 text-lg font-semibold text-[#355A43]">
+                        {calmPlace.pincode || calmPlace.pinCode}
+                      </p>
+                    </div>
+                  )}
                   <div className="rounded-2xl border border-[#bfc8bb] bg-white/90 p-4 shadow-[0_8px_18px_rgba(53,90,67,0.12)]">
                     <AudioPlayer
                       title="Calm Place Audio"

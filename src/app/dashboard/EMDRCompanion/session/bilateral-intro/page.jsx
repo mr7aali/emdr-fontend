@@ -26,17 +26,20 @@ export default function BilateralIntroVideoPage() {
 
   useEffect(() => {
     const journeyId = localStorage.getItem("activeJourneyId") || "";
-    setActiveJourneyId(journeyId);
+    const stateTimer = window.setTimeout(() => setActiveJourneyId(journeyId), 0);
 
     if (hasWatchedBilateralIntroVideo(journeyId)) {
       if (journeyId && token && baseUrl) {
         markRoadmapIntroVideoCompleted({ baseUrl, token, journeyId });
       }
+      window.clearTimeout(stateTimer);
       router.replace(BILATERAL_SETTINGS_ROUTE);
       return;
     }
 
-    if (!journeyId || !token || !baseUrl) return;
+    if (!journeyId || !token || !baseUrl) {
+      return () => window.clearTimeout(stateTimer);
+    }
 
     let cancelled = false;
     const checkRoadmapIntroStatus = async () => {
@@ -56,6 +59,7 @@ export default function BilateralIntroVideoPage() {
 
     return () => {
       cancelled = true;
+      window.clearTimeout(stateTimer);
     };
   }, [baseUrl, router, token]);
 
@@ -83,7 +87,7 @@ export default function BilateralIntroVideoPage() {
         journeyId: activeJourneyId,
       });
     }
-    router.push(BILATERAL_SETTINGS_ROUTE);
+    router.replace(BILATERAL_SETTINGS_ROUTE);
   };
 
   return (

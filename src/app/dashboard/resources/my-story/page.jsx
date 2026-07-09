@@ -178,7 +178,7 @@ export default function MyStoryPage() {
             </div>
             <div className="flex flex-wrap gap-2">
               <Link
-                href="/dashboard/EMDRCompanion/session/next"
+                href="/dashboard/EMDRCompanion/session/next?edit=1"
                 className="rounded-full bg-[#4A7C59] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#3d6649]"
               >
                 Edit Story

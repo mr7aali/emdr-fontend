@@ -10,6 +10,13 @@ import {
   persistVerificationState,
 } from "@/redux/verificationStorage";
 
+const PASSWORD_REQUIREMENTS = [
+  "Use at least 8 characters.",
+  "Include uppercase and lowercase letters.",
+  "Include at least one number.",
+  "Include at least one symbol, such as !, @, #, or ?.",
+];
+
 const getErrorMessage = (error) => {
   const extractMessage = (value) => {
     if (!value) {
@@ -231,6 +238,16 @@ export default function SignupPage() {
             </div>
             <div>
               <label className="block text-white text-sm mb-2">Password</label>
+              <div className="mb-3 rounded-lg border border-white/25 bg-white/10 px-4 py-3 text-xs leading-5 text-white/85">
+                <p className="mb-1 font-semibold text-white">
+                  Password requirements
+                </p>
+                <ul className="list-disc space-y-1 pl-4">
+                  {PASSWORD_REQUIREMENTS.map((requirement) => (
+                    <li key={requirement}>{requirement}</li>
+                  ))}
+                </ul>
+              </div>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}

@@ -480,6 +480,7 @@ export default function EMDRCompanion() {
   });
   const [userInput, setUserInput] = useState("");
   const [selectedBeliefs, setSelectedBeliefs] = useState([]);
+  const [customBelief, setCustomBelief] = useState("");
   const [selectedRating, setSelectedRating] = useState(null);
   const [summaryData, setSummaryData] = useState(null);
   const [isSessionComplete, setIsSessionComplete] = useState(false);
@@ -728,6 +729,7 @@ export default function EMDRCompanion() {
       beliefPairsRef.current = [];
       currentNegativeBeliefIndexRef.current = 0;
       setSelectedBeliefs([]);
+      setCustomBelief("");
       appendBotMessage(
         "What negative belief about yourself comes up when you hold that freeze frame?"
       );
@@ -743,6 +745,7 @@ export default function EMDRCompanion() {
       }
 
       setSelectedBeliefs([]);
+      setCustomBelief("");
       appendBotMessage(
         "What would you prefer to believe about yourself in that situation instead?"
       );
@@ -826,6 +829,7 @@ export default function EMDRCompanion() {
     setSummaryData(null);
     setIsSessionComplete(false);
     setSelectedBeliefs([]);
+    setCustomBelief("");
     setSelectedRating(null);
     setRenderNegativeBeliefs([]);
     setRenderBeliefPairs([]);
@@ -924,6 +928,7 @@ export default function EMDRCompanion() {
       `Negative beliefs: ${selectedBeliefs.join(", ")}`,
     ];
     setSelectedBeliefs([]);
+    setCustomBelief("");
     currentStepRef.current += 1;
     setCurrentInteraction(null);
 
@@ -958,6 +963,7 @@ export default function EMDRCompanion() {
     currentNegativeBeliefIndexRef.current += 1;
     setRenderCurrentNegativeBeliefIndex(currentNegativeBeliefIndexRef.current);
     setSelectedBeliefs([]);
+    setCustomBelief("");
 
     if (
       currentNegativeBeliefIndexRef.current <
@@ -977,6 +983,51 @@ export default function EMDRCompanion() {
         .join(", ")}`,
     ];
     currentStepRef.current += 1;
+    setCurrentInteraction(null);
+
+    window.setTimeout(() => {
+      askNext();
+    }, 150);
+  };
+
+  const handleAddCustomBelief = () => {
+    const nextBelief = customBelief.trim();
+
+    if (!nextBelief) {
+      return;
+    }
+
+    setSelectedBeliefs((currentBeliefs) => {
+      if (currentBeliefs.includes(nextBelief)) {
+        return currentBeliefs;
+      }
+
+      if (currentInteraction?.beliefType === "positive") {
+        return [nextBelief];
+      }
+
+      if (currentBeliefs.length >= 5) {
+        return currentBeliefs;
+      }
+
+      return [...currentBeliefs, nextBelief];
+    });
+    setCustomBelief("");
+  };
+
+  const handleRoadmapBack = () => {
+    if (!currentFlowRef.current || currentStepRef.current <= 0) {
+      setCurrentInteraction({ type: "starting-options" });
+      return;
+    }
+
+    setSessionError("");
+    setSelectedBeliefs([]);
+    setCustomBelief("");
+    setSelectedRating(null);
+    responsesRef.current = responsesRef.current.slice(0, -1);
+    currentStepRef.current = Math.max(0, currentStepRef.current - 1);
+    appendBotMessage("No problem - let's go back and change that.");
     setCurrentInteraction(null);
 
     window.setTimeout(() => {
@@ -1055,6 +1106,18 @@ export default function EMDRCompanion() {
       {sessionError ? (
         <div className="mb-6 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
           {sessionError}
+        </div>
+      ) : null}
+      {currentFlowRef.current && !summaryData ? (
+        <div className="mb-4 flex justify-end">
+          <button
+            type="button"
+            onClick={handleRoadmapBack}
+            disabled={isSyncingSession}
+            className="rounded-full border border-[#cdd6ce] bg-white/80 px-4 py-2 text-sm font-medium text-[#41594d] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Back / change previous answer
+          </button>
         </div>
       ) : null}
 
@@ -1137,9 +1200,13 @@ export default function EMDRCompanion() {
 
               <h3 className="mb-4 text-center text-lg font-semibold text-[#41594d]">
                 {currentInteraction.beliefType === "negative"
-                  ? "Choose what this situation meant or means to you negatively:"
+                  ? "Choose up to 5 main negative beliefs:"
                   : "Select your preferred positive belief:"}
               </h3>
+              <p className="mb-4 text-center text-sm text-[#666]">
+                Pick the few that feel most important. You can also write your
+                own if the list does not quite fit.
+              </p>
 
               <div className="max-h-[300px] space-y-5 overflow-y-auto pr-1">
                 {(currentInteraction.beliefType === "negative"
@@ -1171,6 +1238,8 @@ export default function EMDRCompanion() {
                                         (currentBelief) =>
                                           currentBelief !== belief
                                       )
+                                      : currentBeliefs.length >= 5
+                                        ? currentBeliefs
                                       : [...currentBeliefs, belief];
                                   }
 
@@ -1189,6 +1258,41 @@ export default function EMDRCompanion() {
                       </div>
                     </div>
                   ))}
+              </div>
+
+              <div className="mt-5 rounded-lg border border-[#d4d7d1] bg-white p-4">
+                <label className="mb-2 block text-sm font-semibold text-[#41594d]">
+                  Write your own belief
+                </label>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <input
+                    value={customBelief}
+                    onChange={(event) => setCustomBelief(event.target.value)}
+                    placeholder={
+                      currentInteraction.beliefType === "negative"
+                        ? "e.g. I am too much"
+                        : "e.g. I can be kind to myself"
+                    }
+                    className="min-w-0 flex-1 rounded-md border border-[#d4d7d1] px-3 py-2 text-sm outline-none focus:border-[#41594d]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddCustomBelief}
+                    disabled={
+                      !customBelief.trim() ||
+                      (currentInteraction.beliefType === "negative" &&
+                        selectedBeliefs.length >= 5)
+                    }
+                    className="rounded-md bg-[#41594d] px-4 py-2 text-sm text-white transition hover:bg-[#354a3f] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Add
+                  </button>
+                </div>
+                {currentInteraction.beliefType === "negative" ? (
+                  <p className="mt-2 text-xs text-[#666]">
+                    {selectedBeliefs.length}/5 selected
+                  </p>
+                ) : null}
               </div>
 
               <button

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStoredAuth } from "@/redux/authStorage";
 import { updateSessionProgress, checkSessionAccess } from "@/utils/sessionProgress";
@@ -114,6 +114,7 @@ const buildEditableAnswers = (entry) => {
 
 export default function CBTFormulation() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { token, hasHydrated } = useStoredAuth();
   const currentNodeRef = useRef(null);
   const reactSectionRef = useRef(null);
@@ -137,6 +138,7 @@ export default function CBTFormulation() {
   const [currentFormulationId, setCurrentFormulationId] = useState(null);
 
   const baseUrl = getBaseUrl();
+  const shouldLoadExistingFormulation = searchParams.get("edit") === "1";
 
   const formulationNodes = buildCbtFormulationNodes(cbtOptions);
   const timelineNodes = formulationNodes.timeline;
@@ -221,6 +223,12 @@ export default function CBTFormulation() {
       return;
     }
 
+    if (!shouldLoadExistingFormulation) {
+      setCurrentFormulationId(null);
+      setAnswers({});
+      return;
+    }
+
     const loadExistingFormulation = async () => {
       try {
         const formulations = await fetchCbtFormulations({
@@ -243,7 +251,7 @@ export default function CBTFormulation() {
     };
 
     loadExistingFormulation();
-  }, [baseUrl, hasHydrated, token]);
+  }, [baseUrl, hasHydrated, shouldLoadExistingFormulation, token]);
 
   useEffect(() => {
     if (showReactSection && reactSectionRef.current) {

@@ -13,34 +13,86 @@ export const buildCbtFormulationNodes = (options = DEFAULT_OPTIONS) => {
   return {
     timeline: [
       {
-        id: "beginning",
-        section: "The Beginning",
-        title: "When I Was Little",
-        subtitle: "Early memories & experiences",
+        id: "trigger",
+        section: "Situation",
+        title: "The Situation",
+        subtitle: "What happened recently",
         modalContent: {
-          title: "When I was little (Childhood)",
+          title: "Situation",
           description:
-            "This may or may not be relevant to what you would like to work on so skip it if not.",
-          question:
-            "Float back in time and see if you remember feeling this way (from your situation) as a child or any other time?",
-          bullets: [
-            "Were there specific events or patterns in your family?",
-            "What messages did you receive about yourself growing up?",
-          ],
-          example:
-            '"My parents were very critical" or "I had to be perfect to get attention" or "I learned to stay quiet to avoid conflict"',
+            "Start with the here and now before working backwards.",
+          question: "What happened that brought up these feelings?",
+          bullets: ["Describe the situation", "When did it happen?"],
+          example: `"My boss criticized my work" or "My friend didn't respond"`,
           type: "textarea",
         },
       },
       {
+        id: "thoughts",
+        section: "Thoughts",
+        title: "Thoughts",
+        subtitle: "In my head",
+        modalContent: {
+          title: "Thoughts (In my head)",
+          description: "What thoughts go through your mind?",
+          question: "What do you think when this happens?",
+          example: `"I'm going to fail" or "Nobody likes me"`,
+          type: "textarea",
+        },
+      },
+      {
+        id: "feelings",
+        section: "Feelings",
+        title: "Feelings",
+        subtitle: "In my body",
+        modalContent: {
+          title: "Feelings (In my body)",
+          description:
+            "What emotions and physical sensations do you experience?",
+          question: "Choose the feelings that fit for you:",
+          type: "checkbox",
+          options: mergedOptions.emotions,
+        },
+      },
+      {
+        id: "behaviors",
+        section: "Behaviours",
+        title: "Behaviours",
+        subtitle: "What I did",
+        modalContent: {
+          title: "Behaviours (What I did)",
+          description: "What actions did you take?",
+          question: "What did you do in response?",
+          example: '"Avoided the situation" or "Lashed out at someone"',
+          type: "textarea",
+        },
+      },
+      {
+        id: "consequences",
+        section: "Consequences",
+        title: "The Consequences",
+        subtitle: "Results of my actions",
+        modalContent: {
+          title: "The Consequences",
+          description:
+            "These are the impacts or patterns that may follow from your reactions.",
+          question: "Choose any consequences that fit for you:",
+          type: "checkbox",
+          options: mergedOptions.consequenceOptions,
+          allowOther: true,
+          otherLabel: "Anything else you've noticed?",
+          otherPlaceholder: "Write any other consequence here...",
+        },
+      },
+      {
         id: "learned",
-        section: "What I Learned",
+        section: "Life Event",
         title: "Deep-Down Beliefs",
         subtitle: "What I believe about myself",
         modalContent: {
           title: "Deep-Down Beliefs",
           description:
-            "These are deep beliefs about yourself that might have been activated or try to think carefully about these and see if they match the current situation you chose.",
+            "Now work backwards. These are deep beliefs about yourself that may have been activated by the situation.",
           question: "Choose what this situation meant or means to you negatively",
           type: "checkbox",
           options: mergedOptions.negativeBeliefs,
@@ -48,7 +100,7 @@ export const buildCbtFormulationNodes = (options = DEFAULT_OPTIONS) => {
       },
       {
         id: "rules",
-        section: "My Survival Guide",
+        section: "Rules",
         title: "The Rules",
         subtitle: "How I must be to feel safe",
         modalContent: {
@@ -66,75 +118,27 @@ export const buildCbtFormulationNodes = (options = DEFAULT_OPTIONS) => {
         },
       },
       {
-        id: "trigger",
-        section: "Life Happens",
-        title: "The Trigger",
-        subtitle: "What happened recently",
+        id: "beginning",
+        section: "Early Experience",
+        title: "When I Was Little",
+        subtitle: "Early memories & experiences",
         modalContent: {
-          title: "Life Happens (The Trigger)",
+          title: "When I was little (Childhood)",
           description:
-            "This is the recent situation or event that activated your beliefs and rules.",
-          question: "What happened that brought up these feelings?",
-          bullets: ["Describe the situation", "When did it happen?"],
-          example: `"My boss criticized my work" or "My friend didn't respond"`,
+            "This may or may not be relevant to what you would like to work on so skip it if not.",
+          question:
+            "Float back in time and see if you remember feeling this way as a child or any other time?",
+          bullets: [
+            "Were there specific events or patterns in your family?",
+            "What messages did you receive about yourself growing up?",
+          ],
+          example:
+            '"My parents were very critical" or "I had to be perfect to get attention" or "I learned to stay quiet to avoid conflict"',
           type: "textarea",
         },
       },
     ],
     react: [
-      {
-        id: "thoughts",
-        title: "Thoughts",
-        subtitle: "In my head",
-        modalContent: {
-          title: "Thoughts (In my head)",
-          description: "What thoughts go through your mind?",
-          question: "What do you think when this happens?",
-          example: `"I'm going to fail" or "Nobody likes me"`,
-          type: "textarea",
-        },
-      },
-      {
-        id: "feelings",
-        title: "Feelings",
-        subtitle: "In my body",
-        modalContent: {
-          title: "Feelings (In my body)",
-          description:
-            "What emotions and physical sensations do you experience?",
-          question: "Choose the feelings that fit for you:",
-          type: "checkbox",
-          options: mergedOptions.emotions,
-        },
-      },
-      {
-        id: "behaviors",
-        title: "Behaviors",
-        subtitle: "What I did",
-        modalContent: {
-          title: "Behaviors (What I did)",
-          description: "What actions did you take?",
-          question: "What did you do in response?",
-          example: '"Avoided the situation" or "Lashed out at someone"',
-          type: "textarea",
-        },
-      },
-      {
-        id: "consequences",
-        title: "The Consequences",
-        subtitle: "Results of my actions",
-        modalContent: {
-          title: "The Consequences",
-          description:
-            "These are the impacts or patterns that may follow from your reactions.",
-          question: "Choose any consequences that fit for you:",
-          type: "checkbox",
-          options: mergedOptions.consequenceOptions,
-          allowOther: true,
-          otherLabel: "Anything else you've noticed?",
-          otherPlaceholder: "Write any other consequence here...",
-        },
-      },
       {
         id: "superpowers",
         title: "Your Superpowers",

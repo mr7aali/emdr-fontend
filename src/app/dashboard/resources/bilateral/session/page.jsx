@@ -1710,7 +1710,7 @@ function SessionContent() {
       audio.src = selectedSound.url;
       audio.loop = false;
       audio.preload = "auto";
-      audio.volume = 0.7;
+      audio.volume = 1;
 
       if (!audioContext?.createMediaElementSource || !audioContext?.createStereoPanner) {
         return { audio, panner: null };
@@ -1733,7 +1733,7 @@ function SessionContent() {
     trackAudio.src = selectedSound.url;
     trackAudio.loop = true;
     trackAudio.preload = "auto";
-    trackAudio.volume = 0.7;
+    trackAudio.volume = 1;
 
     audioRef.current = primaryHit;
     audioPoolRef.current = audioPool;
@@ -2090,7 +2090,7 @@ function SessionContent() {
         try {
           hitSound.audio.currentTime = hitOffsetSec;
         } catch {}
-        hitSound.audio.volume = 0.7;
+        hitSound.audio.volume = 1;
         hitSound.audio.playbackRate = 1;
 
         if (hitSound.panner) {
@@ -3139,6 +3139,14 @@ function SessionContent() {
             <h2 className="text-3xl font-serif text-[#0F1912] mb-6">EMDR Processing</h2>
 
             <div className="mb-8 rounded-2xl border border-[#DDE5DA] bg-[#F7FAF5] p-5 text-left">
+              {roadmapAudioContext.roadmapSummaryText ? (
+                <div className="mb-5 rounded-xl bg-white/80 p-4 text-sm leading-6 text-gray-700">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#4A7C59]">
+                    Roadmap Summary
+                  </p>
+                  <p>{roadmapAudioContext.roadmapSummaryText}</p>
+                </div>
+              ) : null}
               <div className="flex justify-center">
                 <button
                   type="button"
@@ -3180,11 +3188,15 @@ function SessionContent() {
           <div className="bg-white rounded-3xl p-8 md:p-12 max-w-3xl w-full shadow-2xl text-center">
             <p className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-3">Check-In</p>
             <h2 className="text-2xl font-serif text-[#0F1912] mb-3">Is it changing and still connected?</h2>
+            <p className="mx-auto mb-5 max-w-2xl text-sm leading-6 text-gray-600">
+              If it feels stuck, press Stuck. You can then change direction in
+              the bilateral settings and return to the original image.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <button onClick={() => handleCheckIn("changing")} className="py-4 bg-[#4A7C59] text-white rounded-xl hover:bg-[#3d6849] transition-all text-lg whitespace-nowrap">Changing</button>
               <button onClick={() => handleCheckIn("not-changing")} className="py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all text-lg whitespace-nowrap">Not Changing</button>
               <button onClick={() => handleCheckIn("stuck")} className="py-4 border-2 border-amber-300 text-amber-800 rounded-xl hover:bg-amber-50 transition-all text-lg whitespace-nowrap">Stuck</button>
-              <button onClick={openStuckDirectionModal} className="py-4 border-2 border-[#4A7C59] text-[#4A7C59] rounded-xl hover:bg-[#F6F7F4] transition-all text-lg whitespace-nowrap">Direction Change</button>
+              <button onClick={openStuckDirectionModal} className="py-4 border-2 border-[#4A7C59] text-[#4A7C59] rounded-xl hover:bg-[#F6F7F4] transition-all text-lg whitespace-nowrap">Change Direction</button>
             </div>
           </div>
         </div>
@@ -3197,7 +3209,8 @@ function SessionContent() {
           <div className="bg-white rounded-3xl p-8 md:p-12 max-w-2xl w-full shadow-2xl text-center">
             <h2 className="text-3xl font-serif text-[#0F1912] mb-4">Direction Change</h2>
             <p className="mx-auto mb-8 max-w-xl text-gray-700 leading-relaxed">
-              Choose a new direction for the bilateral stimulation.
+              Change the bilateral direction, then return to the original image
+              and continue noticing what happens.
             </p>
 
             <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -3656,20 +3669,18 @@ function SessionContent() {
       {BLS_ACTIVE_STATES.includes(sessionState) && (
         <button
           onClick={handlePauseToggle}
-          className="absolute bottom-8 right-9 z-40 px-6 py-3 rounded-full font-serif text-xs cursor-pointer transition-all"
-          style={sessionScreenButtonStyle}
+          className="absolute bottom-8 right-9 z-40 rounded-full border border-white/50 bg-white/85 px-5 py-3 font-sans text-sm font-semibold uppercase tracking-[0.12em] text-[#1F2D25] shadow-lg backdrop-blur-md transition-all hover:bg-white active:scale-95"
         >
-          {isPaused ? "resume" : "pause"}
+          {isPaused ? "Resume" : "Pause"}
         </button>
       )}
 
       {/* Exit button */}
       <button
         onClick={() => router.back()}
-        className="absolute bottom-8 left-9 z-40 px-6 py-3 rounded-full font-serif text-xs cursor-pointer transition-all"
-        style={sessionScreenButtonStyle}
+        className="absolute bottom-8 left-9 z-40 rounded-full border border-white/50 bg-white/85 px-5 py-3 font-sans text-sm font-semibold uppercase tracking-[0.12em] text-[#1F2D25] shadow-lg backdrop-blur-md transition-all hover:bg-white active:scale-95"
       >
-        exit
+        Exit
       </button>
     </div>
   );
