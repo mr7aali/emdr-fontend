@@ -32,6 +32,57 @@ const ASSESSMENTS = [
   },
 ];
 
+const formatAxisLabel = (dateValue, index) => {
+  if (!dateValue) return `Entry ${index + 1}`;
+
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return `Entry ${index + 1}`;
+
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(date);
+};
+
+const formatTooltipLabel = (dateValue, index) => {
+  if (!dateValue) return `Entry ${index + 1}`;
+
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return `Entry ${index + 1}`;
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(date);
+};
+
+const ChartTooltip = ({ active, payload, assessment }) => {
+  if (!active || !payload?.length) return null;
+
+  const point = payload[0]?.payload;
+
+  return (
+    <div className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm shadow-[0_10px_25px_rgba(0,0,0,0.05)]">
+      <p className="mb-1 font-semibold text-stone-900">
+        {point?.tooltipLabel || point?.label}
+      </p>
+      <p className="text-stone-700">
+        Score:{" "}
+        <span className="font-semibold" style={{ color: assessment.color }}>
+          {point?.value ?? 0} / {assessment.max}
+        </span>
+      </p>
+      {point?.band ? (
+        <p className="mt-1 text-xs text-stone-500">{point.band}</p>
+      ) : null}
+    </div>
+  );
+};
+
 export default function SubscriptionAssessmentHistoryChart() {
   const { token } = useStoredAuth();
   const rawBaseUrl =
@@ -101,10 +152,8 @@ export default function SubscriptionAssessmentHistoryChart() {
             if (Number.isNaN(date.getTime())) return null;
 
             return {
-              label: new Intl.DateTimeFormat("en-US", {
-                weekday: "short",
-                day: "numeric",
-              }).format(date),
+              label: formatAxisLabel(entry.submittedAt, index),
+              tooltipLabel: formatTooltipLabel(entry.submittedAt, index),
               value: Number(entry.score ?? 0),
               band: entry.severity || "Score",
               submittedAt: entry.submittedAt,
@@ -206,17 +255,7 @@ export default function SubscriptionAssessmentHistoryChart() {
                     domain={[0, assessment.max]}
                   />
                   <Tooltip
-                    formatter={(value, _name, props) => [
-                      `${value} / ${assessment.max}`,
-                      props?.payload?.band || "Score",
-                    ]}
-                    contentStyle={{
-                      backgroundColor: "#FFF",
-                      borderRadius: "12px",
-                      border: "1px solid #E7E5E4",
-                      fontSize: "13px",
-                      boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
-                    }}
+                    content={<ChartTooltip assessment={assessment} />}
                   />
                   <Area
                     type="monotone"

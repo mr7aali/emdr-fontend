@@ -11,9 +11,8 @@ export default function ResultsPage() {
       </div>
 
       <div className="flex flex-col gap-10 mt-8">
-        <AssessmentChart></AssessmentChart> 
+        <AssessmentChart></AssessmentChart>
         <SubscriptionAssessmentHistoryChart />
-       
       </div>
     </div>
   );

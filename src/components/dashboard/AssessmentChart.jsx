@@ -17,76 +17,93 @@ const TRACKERS = [
     fallbackTitle: "Anxiety Scale",
     color: "#4A7373",
     fillId: "anxietyFill",
+    max: 40,
   },
   {
     trackerType: "depression",
     fallbackTitle: "Depression Scale",
     color: "#6B4D5F",
     fillId: "depressionFill",
+    max: 40,
   },
   {
     trackerType: "anger",
     fallbackTitle: "Anger",
     color: "#A8553D",
     fillId: "angerFill",
+    max: 40,
   },
   {
     trackerType: "social-phobia",
     fallbackTitle: "Social Phobia",
     color: "#5C5E8B",
     fillId: "socialPhobiaFill",
+    max: 40,
   },
   {
     trackerType: "ocd",
     fallbackTitle: "OCD",
     color: "#6B7F5F",
     fillId: "ocdFill",
+    max: 40,
   },
   {
     trackerType: "specific-phobia",
     fallbackTitle: "Specific Phobia",
     color: "#7D5A3D",
     fillId: "specificPhobiaFill",
+    max: 40,
   },
   {
     trackerType: "pain",
     fallbackTitle: "Pain",
     color: "#9B5D52",
     fillId: "painFill",
+    max: 40,
   },
   {
     trackerType: "stress-burnout",
     fallbackTitle: "Stress & Burnout",
     color: "#A07238",
     fillId: "stressFill",
+    max: 40,
   },
   {
     trackerType: "addiction",
     fallbackTitle: "Addiction",
     color: "#5C4438",
     fillId: "addictionFill",
+    max: 40,
   },
   {
     trackerType: "self-esteem",
     fallbackTitle: "Self-Esteem",
     color: "#A38442",
     fillId: "selfEsteemFill",
+    max: 40,
   },
   {
     trackerType: "worry",
     fallbackTitle: "Worry",
     color: "#4F627A",
     fillId: "worryFill",
+    max: 40,
   },
   {
     trackerType: "trauma",
     fallbackTitle: "Trauma",
     color: "#3F3F47",
     fillId: "traumaFill",
+    max: 40,
   },
 ];
 
-const formatDateLabel = (dateValue, index) => {
+const getSubmissionScore = (submission) => {
+  const score = Number(submission?.totalScore ?? 0);
+  return Number.isFinite(score) ? score : 0;
+};
+
+const formatAxisLabel = (dateValue, index) => {
   if (!dateValue) {
     return `Entry ${index + 1}`;
   }
@@ -98,13 +115,59 @@ const formatDateLabel = (dateValue, index) => {
   }
 
   return new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
-    day: "numeric"
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
   }).format(parsedDate);
 };
 
+const formatTooltipLabel = (dateValue, index) => {
+  if (!dateValue) {
+    return `Entry ${index + 1}`;
+  }
+
+  const parsedDate = new Date(dateValue);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return `Entry ${index + 1}`;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(parsedDate);
+};
+
+const ChartTooltip = ({ active, payload, assessment }) => {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const point = payload[0]?.payload;
+
+  return (
+    <div className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm shadow-[0_10px_25px_rgba(0,0,0,0.05)]">
+      <p className="mb-1 font-semibold text-stone-900">
+        {point?.tooltipLabel || point?.label}
+      </p>
+      <p className="text-stone-700">
+        Score:{" "}
+        <span className="font-semibold" style={{ color: assessment.color }}>
+          {point?.value ?? 0} / {assessment.max}
+        </span>
+      </p>
+      {point?.severity ? (
+        <p className="mt-1 text-xs text-stone-500">{point.severity}</p>
+      ) : null}
+    </div>
+  );
+};
+
 export default function AssessmentChart() {
-  const { token } = useStoredAuth();
+  const { token, hasHydrated } = useStoredAuth();
   const rawBaseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || process.env.VITE_BASE_URL || "";
   const baseUrl = rawBaseUrl.endsWith("/")
@@ -115,37 +178,49 @@ export default function AssessmentChart() {
       TRACKERS.map(({ trackerType, fallbackTitle }) => [
         trackerType,
         { title: fallbackTitle, data: [] },
-      ])
-    )
+      ]),
+    ),
   );
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchChartData = async () => {
+      if (!hasHydrated) {
+        setIsLoading(true);
+        return;
+      }
+
       if (!baseUrl) {
         setIsLoading(false);
         return;
       }
 
       try {
+        setIsLoading(true);
         const nextCharts = Object.fromEntries(
           TRACKERS.map(({ trackerType, fallbackTitle }) => [
             trackerType,
             { title: fallbackTitle, data: [] },
-          ])
+          ]),
         );
 
-        const configResponse = await fetch(`${baseUrl}/api/symptom-tracker/configs`, {
-          cache: "no-store",
-          headers: {
-            'Accept': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        const configResponse = await fetch(
+          `${baseUrl}/api/symptom-tracker/configs`,
+          {
+            cache: "no-store",
+            headers: {
+              Accept: "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
           },
-        });
+        );
 
         if (configResponse.ok) {
           const configResult = await configResponse.json();
-          const configs = Array.isArray(configResult?.data) ? configResult.data : [];
+          const configs = Array.isArray(configResult?.data)
+            ? configResult.data
+            : [];
 
           configs.forEach((config) => {
             if (!nextCharts[config?.trackerType]) {
@@ -165,10 +240,10 @@ export default function AssessmentChart() {
                 {
                   cache: "no-store",
                   headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`,
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
                   },
-                }
+                },
               );
 
               if (!response.ok) {
@@ -183,7 +258,7 @@ export default function AssessmentChart() {
                   ? result.data.submissions
                   : [],
               };
-            })
+            }),
           );
 
           historyResults.forEach(({ trackerType, submissions }) => {
@@ -191,7 +266,8 @@ export default function AssessmentChart() {
 
             nextCharts[trackerType].data = submissions
               .map((submission, index) => {
-                const dateValue = submission?.submittedAt || submission?.createdAt;
+                const dateValue =
+                  submission?.submittedAt || submission?.createdAt;
                 const date = new Date(dateValue);
 
                 if (Number.isNaN(date.getTime())) {
@@ -199,13 +275,19 @@ export default function AssessmentChart() {
                 }
 
                 return {
-                  label: formatDateLabel(dateValue, index),
-                  value: submission?.totalScore ?? 0,
+                  label: formatAxisLabel(dateValue, index),
+                  tooltipLabel: formatTooltipLabel(dateValue, index),
+                  value: getSubmissionScore(submission),
+                  severity:
+                    submission?.severityBand || submission?.severity || "",
                   submittedAt: dateValue,
                 };
               })
               .filter(Boolean)
-              .sort((first, second) => new Date(first.submittedAt) - new Date(second.submittedAt))
+              .sort(
+                (first, second) =>
+                  new Date(first.submittedAt) - new Date(second.submittedAt),
+              )
               .slice(-7);
           });
         }
@@ -219,7 +301,7 @@ export default function AssessmentChart() {
     };
 
     fetchChartData();
-  }, [baseUrl, token]);
+  }, [baseUrl, hasHydrated, token]);
 
   const assessments = useMemo(
     () =>
@@ -229,15 +311,11 @@ export default function AssessmentChart() {
           chartsByType[tracker.trackerType]?.title || tracker.fallbackTitle,
         data: chartsByType[tracker.trackerType]?.data || [],
       })),
-    [chartsByType]
+    [chartsByType],
   );
 
   return (
     <div className="mt-2">
-      {isLoading ? (
-        <div className="mb-4 text-sm text-stone-500">Loading your result history...</div>
-      ) : null}
-
       <div className="space-y-6">
         {assessments.map((assessment) => (
           <div
@@ -258,7 +336,23 @@ export default function AssessmentChart() {
             </div>
 
             <div className="h-[180px] md:h-[210px]">
-              {assessment.data.length > 0 ? (
+              {isLoading ? (
+                <div className="flex h-full flex-col justify-center rounded-[20px] border border-stone-200 bg-white/40 p-5">
+                  <div className="mb-4 h-3 w-32 animate-pulse rounded-full bg-stone-200" />
+                  <div className="flex h-24 items-end gap-3">
+                    {[35, 62, 48, 76, 58, 84, 70].map((height, index) => (
+                      <div
+                        key={index}
+                        className="flex-1 animate-pulse rounded-t-xl bg-stone-200/80"
+                        style={{ height: `${height}%` }}
+                      />
+                    ))}
+                  </div>
+                  <p className="mt-5 text-sm text-stone-500">
+                    Loading your result history...
+                  </p>
+                </div>
+              ) : assessment.data.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
                     data={assessment.data}
@@ -295,25 +389,22 @@ export default function AssessmentChart() {
                       axisLine={false}
                       tickLine={false}
                       dy={12}
-                      tick={{ fill: assessment.color, fontSize: 12, fontWeight: "500" }}
+                      tick={{
+                        fill: assessment.color,
+                        fontSize: 12,
+                        fontWeight: "500",
+                      }}
                     />
                     <YAxis
                       axisLine={false}
                       tickLine={false}
                       dx={-6}
                       tick={{ fill: "#A8A29E", fontSize: 11 }}
-                      domain={[0, 40]}
+                      domain={[0, assessment.max]}
                       ticks={[0, 10, 20, 30, 40]}
                     />
                     <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#FFF",
-                        borderRadius: "12px",
-                        border: "1px solid #E7E5E4",
-                        fontSize: "13px",
-                        boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
-                      }}
-                      labelStyle={{ fontWeight: "600", marginBottom: "4px" }}
+                      content={<ChartTooltip assessment={assessment} />}
                     />
                     <Area
                       type="monotone"
@@ -326,13 +417,13 @@ export default function AssessmentChart() {
                         r: 4,
                         fill: assessment.color,
                         strokeWidth: 2,
-                        stroke: "#fff"
+                        stroke: "#fff",
                       }}
                       activeDot={{
                         r: 6,
                         fill: assessment.color,
                         strokeWidth: 2,
-                        stroke: "#fff"
+                        stroke: "#fff",
                       }}
                     />
                   </AreaChart>
